@@ -1,13 +1,19 @@
 # Kinsella Revisited: A Longitudinal Replication
 
-Code and data for the article *Kinsella Revisited: Concentration and
-Diversification in the Post-Cold War Arms Trade Network, 2005-2025*
-(accepted for publication, 2026), a replication and extension of David
-Kinsella's (2003) social network analysis of the international arms trade
-using SIPRI Arms Transfers Database data through 2025.
+Code and data for the article:
 
-Every table and figure in the accepted version is reproduced by the
-scripts in `src/`; the published figures are reproduced pixel for pixel.
+> Doğan, N. R. (2026). Kinsella Revisited: Concentration and
+> Diversification in the Post-Cold War Arms Trade Network, 2005-2025.
+> *Journal of International Relations and Political Science Studies*,
+> (16), 119-139. https://doi.org/10.69494/jirps.2000991
+> ([PDF](https://dergipark.org.tr/en/download/article-file/6253024))
+
+The article is a replication and extension of David Kinsella's (2003)
+social network analysis of the international arms trade, using SIPRI Arms
+Transfers Database data through 2025.
+
+Every table and figure in the published article is reproduced by the
+scripts in `src/`; the figures are reproduced pixel for pixel.
 
 ## Research question
 
@@ -126,14 +132,8 @@ supplier other than the platform's.
 ├── output/
 │   ├── tables/           # all output tables as CSV
 │   └── figures/          # Figures 1a-1e and 2 as PNG
-├── paper/
-│   └── research_note.md  # early working draft (superseded, see below)
 └── requirements.txt
 ```
-
-`paper/research_note.md` is an early working draft kept for reference.
-Its figures predate the corrections listed below; the accepted article
-and the outputs in this repository supersede it.
 
 ## Reproducing the analysis
 
@@ -167,7 +167,7 @@ scripts draw the published figures and need the R packages tidyverse,
 igraph, ggraph and ggrepel (tested with R 4.5.3, igraph 2.3.3,
 ggraph 2.2.2, ggrepel 0.9.8).
 
-## Changes in this version (accepted article, November 2026)
+## Changes in this version (published article, November 2026)
 
 Compared with the July 2026 version of this repository:
 
@@ -186,6 +186,8 @@ Compared with the July 2026 version of this repository:
 - **Figures 1a-1e** are now the published versions, drawn in R.
 - Output files that were not paper tables are renamed with a `check_`
   prefix, so `tableN_` files match the paper's table numbers.
+- The early working draft (`paper/research_note.md`) is removed; the
+  published article supersedes it.
 
 ## Future work
 
@@ -204,6 +206,15 @@ Compared with the July 2026 version of this repository:
   backward to pre-2005 cross-sections where data permits.
 
 ## Citation
+
+If you use this code or data, please cite the article:
+
+Doğan, N. R. (2026). Kinsella Revisited: Concentration and
+Diversification in the Post-Cold War Arms Trade Network, 2005-2025.
+*Journal of International Relations and Political Science Studies*,
+(16), 119-139. https://doi.org/10.69494/jirps.2000991
+
+Sources:
 
 Kinsella, D. (2003). *Changing structure of the arms trade: A social
 network analysis.*
