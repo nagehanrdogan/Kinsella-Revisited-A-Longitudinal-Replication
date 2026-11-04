@@ -7,10 +7,10 @@ Produces Tables 1-4 from the paper, starting from edges_cross_sections.csv:
   Table 3: HHI + leading supplier's market share (5 cross-sections)
   Table 4: top 10 suppliers by TIV share (5 cross-sections)
 
-Formula notes (derived by matching the 2005 cross-section against the
-figures reported in the paper):
-  density        = n_edges / (g * (g-1))
-  centralization = sum(max(out-degree) - out-degree_i) / (g * (g-1))
+Formulas (Kinsella 2003, 18-20; paper equations 1-5) are defined once in
+kinsella_measures.py:
+  density        = 2L / g(g-1)
+  centralization = sum(max(out-degree) - out-degree_i) / (g-1)^2
                    -- uses raw (unnormalized) out-degree
   out-degree centrality (normalized) = raw_out-degree / (g-1)
   HHI            = sum(share_i^2), share_i = supplier i's total TIV / network's total TIV
@@ -24,7 +24,8 @@ Output: output/tables/table1_density_centralization.csv
 
 from pathlib import Path
 import pandas as pd
-import networkx as nx
+
+import kinsella_measures as km
 
 try:
     PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -37,37 +38,22 @@ TABLES_DIR = PROJECT_ROOT / "output/tables"
 YEARS = [2005, 2010, 2015, 2020, 2025]
 
 
-def build_graph(edges_year: pd.DataFrame) -> nx.DiGraph:
-    G = nx.DiGraph()
-    for _, row in edges_year.iterrows():
-        G.add_edge(row["supplier"], row["recipient"], weight=row["tiv"])
-    return G
-
-
 def compute_table1_and_2(edges: pd.DataFrame):
     table1_rows = []
     table2_rows = []
 
     for year in YEARS:
-        e = edges[edges["year"] == year]
-        G = build_graph(e)
-        g = G.number_of_nodes()
-        n_edges = G.number_of_edges()
-
-        density = n_edges / (g * (g - 1))
-
-        outdeg_raw = dict(G.out_degree())
-        c_max_raw = max(outdeg_raw.values())
-        numerator = sum(c_max_raw - v for v in outdeg_raw.values())
-        centralization = numerator / (g * (g - 1))
+        G = km.build_graph(edges[edges["year"] == year])
 
         table1_rows.append({
-            "year": year, "density": round(density, 4),
-            "centralization": round(centralization, 4),
-            "n_nodes": g, "n_edges": n_edges,
+            "year": year,
+            "density": round(km.density(G), 4),
+            "centralization": round(km.centralization(G), 4),
+            "n_nodes": G.number_of_nodes(),
+            "n_edges": G.number_of_edges(),
         })
 
-        outdeg_norm = {n: v / (g - 1) for n, v in outdeg_raw.items()}
+        outdeg_norm = km.out_degree_centrality(G)
         top20 = sorted(outdeg_norm.items(), key=lambda x: -x[1])[:20]
         for rank, (supplier, score) in enumerate(top20, start=1):
             table2_rows.append({
@@ -83,18 +69,11 @@ def compute_table3_and_4(edges: pd.DataFrame):
     table4_rows = []
 
     for year in YEARS:
-        e = edges[edges["year"] == year]
-        supplier_tiv = e.groupby("supplier")["tiv"].sum()
-        total_tiv = supplier_tiv.sum()
-        shares = (supplier_tiv / total_tiv).sort_values(ascending=False)
-
-        hhi = (shares ** 2).sum()
-        top_supplier = shares.idxmax()
-        top_share = shares.max()
+        shares = km.supplier_shares(edges[edges["year"] == year])
 
         table3_rows.append({
-            "year": year, "hhi": round(hhi, 4),
-            "top_supplier": top_supplier, "top_market_share": round(top_share, 4),
+            "year": year, "hhi": round((shares ** 2).sum(), 4),
+            "top_supplier": shares.idxmax(), "top_market_share": round(shares.max(), 4),
         })
 
         top10 = shares.head(10)
