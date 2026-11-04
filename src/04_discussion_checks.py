@@ -7,8 +7,8 @@ Produces two checks for the Russia paragraph in the Discussion section:
   (b) Who supplies Russia (and with what TIV) in the 2025 cross-section.
 
 Input:  data/processed/edges_cross_sections.csv
-Output: output/tables/table7_russia_balance.csv
-        output/tables/table8_russia_2025_suppliers.csv
+Output: output/tables/check_russia_balance.csv
+        output/tables/check_russia_2025_suppliers.csv
 """
 
 from pathlib import Path
@@ -51,17 +51,17 @@ def main():
     TABLES_DIR.mkdir(parents=True, exist_ok=True)
     edges = pd.read_csv(EDGES_PATH)
 
-    table7 = russia_balance_over_time(edges)
-    table7.to_csv(TABLES_DIR / "table7_russia_balance.csv", index=False)
+    balance = russia_balance_over_time(edges)
+    balance.to_csv(TABLES_DIR / "check_russia_balance.csv", index=False)
 
-    table8 = russia_2025_suppliers(edges)
-    table8.to_csv(TABLES_DIR / "table8_russia_2025_suppliers.csv", index=False)
+    suppliers_2025 = russia_2025_suppliers(edges)
+    suppliers_2025.to_csv(TABLES_DIR / "check_russia_2025_suppliers.csv", index=False)
 
-    print("Table 7 (Russia in/out balance over time):")
-    print(table7.to_string(index=False))
+    print("Russia in/out balance over time:")
+    print(balance.to_string(index=False))
     print()
-    print("Table 8 (Russia's 2025 suppliers):")
-    print(table8.to_string(index=False))
+    print("Russia's 2025 suppliers:")
+    print(suppliers_2025.to_string(index=False))
 
 
 if __name__ == "__main__":

@@ -31,7 +31,9 @@ except NameError:
 RAW_PATH = PROJECT_ROOT / "data/raw/1995-2025.csv"
 PROCESSED_DIR = PROJECT_ROOT / "data/processed"
 CROSS_SECTION_YEARS = [2005, 2010, 2015, 2020, 2025]
-MIN_DELIVERY_YEAR = 2004  # scope stated in the paper's method section: 2004-2025
+# Cross-sections start in 2005; 2004 is kept only because the first five-year
+# window behind Figure 2 (05_moving_window.py) runs 2004-2008.
+MIN_DELIVERY_YEAR = 2004
 
 
 def load_raw(path: str) -> pd.DataFrame:
@@ -43,7 +45,7 @@ def load_raw(path: str) -> pd.DataFrame:
 
 
 def filter_scope(df: pd.DataFrame) -> pd.DataFrame:
-    """Keeps only deliveries from 2004 onward (the paper's scope)."""
+    """Keeps only deliveries from 2004 onward (see MIN_DELIVERY_YEAR)."""
     return df[df["Delivery year"] >= MIN_DELIVERY_YEAR].copy()
 
 
